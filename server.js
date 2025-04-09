@@ -24,10 +24,18 @@ const connect = async () => {
   }
 };
 
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+// ✅ CORS setup for frontend on Vercel
+app.use(cors({ origin: "https://talent-exchange-project.vercel.app", credentials: true }));
+
 app.use(express.json());
 app.use(cookieParser());
 
+// ✅ Root route for Render homepage
+app.get("/", (req, res) => {
+  res.send("🚀 Talent Exchange Backend is Live on Render!");
+});
+
+// API routes
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/gigs", gigRoute);
@@ -36,14 +44,16 @@ app.use("/api/conversations", conversationRoute);
 app.use("/api/messages", messageRoute);
 app.use("/api/reviews", reviewRoute);
 
+// Error handler
 app.use((err, req, res, next) => {
   const errorStatus = err.status || 500;
   const errorMessage = err.message || "Something went wrong!";
-
   return res.status(errorStatus).send(errorMessage);
 });
 
+// Server listening
 app.listen(8800, () => {
   connect();
   console.log("Backend server is running!");
 });
+
